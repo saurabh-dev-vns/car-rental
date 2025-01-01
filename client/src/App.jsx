@@ -6,6 +6,8 @@ import Testimonials from "./Pages/Testimonials";
 import Navbar from "./components/Navbar/Navbar";
 import Team from "./Pages/Team";
 import Contact from "./Pages/Contact";
+import Login from "./components/Auth/Login";
+import Register from "./components/Auth/Register";
 function App() {
   return (
     <BrowserRouter>
@@ -17,6 +19,8 @@ function App() {
     <Route  path="/testimonials" element={<Testimonials/>}/>
     <Route  path="/team" element={<Team/>}/>
     <Route  path="/contact" element={<Contact/>}/>
+    <Route path="/login" element={<Login/>}/>
+    <Route path="/register" element={<Register/>} />
     </Routes>
     </BrowserRouter>
   );

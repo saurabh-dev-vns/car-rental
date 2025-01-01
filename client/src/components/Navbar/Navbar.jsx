@@ -43,10 +43,10 @@ const Navbar = () => {
           contact us
         </Link>
         <div className="auth-container">
-          <Link className="sign-up" to="/">
+          <Link className="sign-up" to="/register">
             sign up
           </Link>
-          <Link className="log-in" to="/">
+          <Link className="log-in" to="/login">
             log in
           </Link>
         </div>
