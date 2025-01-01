@@ -15,7 +15,10 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log("User is logged in:", user); // Log the user object if logged in
         navigate("/"); // Redirect to /home if logged in
+      } else {
+        console.log("User is not logged in."); // Log when there is no user
       }
     });
     return () => unsubscribe(); // Cleanup on unmount
