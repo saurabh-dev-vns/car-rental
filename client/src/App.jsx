@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar/Navbar";
 import Team from "./Pages/Team";
 import Contact from "./Pages/Contact";
 import Errorpage from "./Pages/Errorpage"; 
+import Login from "./components/Auth/Login";
+import Register from "./components/Auth/Register";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/team" element={<Team />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<Errorpage />} />
+        <Route path="/login" element={ <Login/> } />
+        <Route path="/regoster" element= {<Register/>} />
       </Routes>
     </BrowserRouter>
   );
