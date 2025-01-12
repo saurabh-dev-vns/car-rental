@@ -1,5 +1,18 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
+
 import {
   Phone,
   Mail,
@@ -148,8 +161,22 @@ const Contact = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 className="bg-gray-100 rounded-lg p-4 h-64 flex items-center justify-center">
-                <MapPin className="w-12 h-12 text-gray-400" />
+                <MapContainer
+                  center={[51.505, -0.09]} // Latitude and Longitude for the map center
+                  zoom={13}
+                  style={{ height: "100%", width: "100%" }}
+                  className="rounded-lg"
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  <Marker position={[51.505, -0.09]}>
+                    <Popup>A sample popup! Add custom info here.</Popup>
+                  </Marker>
+                </MapContainer>
               </motion.div>
+
             </motion.div>
 
             {/* Contact Form */}
