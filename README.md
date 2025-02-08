@@ -93,6 +93,13 @@ Welcome to the Car Rental  project! This application allows users to rent cars e
 3. Book a Car: Select a car, choose your rental dates, and confirm your booking.
 4. Admin Panel: If you are an admin, log in to manage cars and bookings.
 
+## Contributos
+A big thanks and shout out to our contributors without whom this project could be here
+
+<a href="https://github.com/saurabh-dev-vns/car-rental/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=saurabh-dev-vns/car-rental" />
+</a>
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
