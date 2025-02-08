@@ -12,6 +12,7 @@ Welcome to the Car Rental  project! This application allows users to rent cars e
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Contributors](#contributors)
 
 ## Features
 
@@ -93,7 +94,7 @@ Welcome to the Car Rental  project! This application allows users to rent cars e
 3. Book a Car: Select a car, choose your rental dates, and confirm your booking.
 4. Admin Panel: If you are an admin, log in to manage cars and bookings.
 
-## Contributos
+## Contributors
 A big thanks and shout out to our contributors without whom this project could be here
 
 <a href="https://github.com/saurabh-dev-vns/car-rental/graphs/contributors">
