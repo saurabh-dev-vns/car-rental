@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/store';
+import Button from '../components/ui/Button';
 
 // Updated cars array with dark mode background variants
 const cars = [
@@ -114,24 +115,24 @@ const CarDetailPage = () => {
 
   return (
     selectedCar ? (
-      <div className="container mx-auto p-6 pt-28 transition-colors duration-300">
-        <div className="flex flex-col md:flex-row md:space-x-10">
+      <div className="container mx-auto p-4 sm:p-6 pt-28 transition-colors duration-300">
+        <div className="flex flex-col lg:flex-row lg:space-x-10 space-y-8 lg:space-y-0">
 
           {/* Car Image Container */}
-          <div className="w-full md:w-1/2 mb-8 md:mb-0">
+          <div className="w-full lg:w-1/2">
             <img
               src={selectedCar.image}
               alt={selectedCar.name}
-              className="w-full h-80 object-cover rounded-xl border border-gray-200 dark:border-zinc-800 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+              className="w-full h-64 sm:h-80 object-cover rounded-xl border border-gray-200 dark:border-zinc-800 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
             />
           </div>
 
           {/* Details & Booking Card */}
-          <div className="w-full md:w-1/2 bg-white dark:bg-zinc-900 shadow-xl rounded-xl p-8 border border-transparent dark:border-zinc-800 transition-colors">
-            <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
+          <div className="w-full lg:w-1/2 bg-white dark:bg-zinc-900 shadow-xl rounded-xl p-6 sm:p-8 border border-transparent dark:border-zinc-800 transition-colors">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">
               {selectedCar.name}
             </h2>
-            <p className="text-xl text-gray-600 dark:text-zinc-400 mb-4">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-zinc-400 mb-4">
               {selectedCar.category} — <span className="text-orange-500 font-bold">${selectedCar.price}/day</span>
             </p>
 
@@ -163,24 +164,24 @@ const CarDetailPage = () => {
             </div>
 
             {/* Feature Badges */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
-                <div className="text-xl mb-1">🪑</div>
-                <span className="text-xs text-gray-500 dark:text-zinc-400">{selectedCar.features.seats} seats</span>
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
+              <div className="flex flex-col items-center p-2 sm:p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
+                <div className="text-lg sm:text-xl mb-1">🪑</div>
+                <span className="text-xs text-gray-500 dark:text-zinc-400 text-center">{selectedCar.features.seats} seats</span>
               </div>
-              <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
-                <div className="text-xl mb-1">🧳</div>
-                <span className="text-xs text-gray-500 dark:text-zinc-400">{selectedCar.features.luggage} luggage</span>
+              <div className="flex flex-col items-center p-2 sm:p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
+                <div className="text-lg sm:text-xl mb-1">🧳</div>
+                <span className="text-xs text-gray-500 dark:text-zinc-400 text-center">{selectedCar.features.luggage} luggage</span>
               </div>
-              <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
-                <div className="text-xl mb-1">⛽</div>
-                <span className="text-xs text-gray-500 dark:text-zinc-400">{selectedCar.features.fuel} fuel</span>
+              <div className="flex flex-col items-center p-2 sm:p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
+                <div className="text-lg sm:text-xl mb-1">⛽</div>
+                <span className="text-xs text-gray-500 dark:text-zinc-400 text-center">{selectedCar.features.fuel} fuel</span>
               </div>
             </div>
 
             {/* Booking Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-1">Pick-up Date</label>
                   <input
@@ -219,13 +220,14 @@ const CarDetailPage = () => {
                 />
               </div>
 
-              <button
+              <Button
                 type="submit"
-                disabled={loading}
-                className="mt-4 w-full py-4 bg-orange-500 text-white font-bold rounded-lg shadow-lg shadow-orange-500/30 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform active:scale-95"
+                loading={loading}
+                className="mt-4 w-full py-4 text-base font-bold shadow-lg shadow-orange-500/20"
+                size="lg"
               >
-                {loading ? 'Processing...' : 'Confirm Booking Now'}
-              </button>
+                {loading ? 'Processing Booking...' : 'Confirm Booking Now'}
+              </Button>
             </form>
           </div>
         </div>

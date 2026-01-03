@@ -14,7 +14,8 @@ import {
 import { auth } from "../Auth/Firebase.js";
 import { signOut } from "firebase/auth";
 import useAuthStore from "../../store/store.js";
-import ThemeToggle from "./ThemeToggle.jsx"; // Fixed the path here
+import ThemeToggle from "./ThemeToggle.jsx";
+import Button from "../ui/Button.jsx"; // Fixed the path here
 
 const Navbar = () => {
   const { user, setUser, logout } = useAuthStore();
@@ -114,14 +115,15 @@ const Navbar = () => {
             <div className="flex items-center space-x-4">
               {user ? (
                 <div className="relative">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <Button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all">
+                    variant="primary"
+                    size="md"
+                    className="flex items-center space-x-2"
+                  >
                     <span>Account</span>
                     <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
-                  </motion.button>
+                  </Button>
 
                   <AnimatePresence>
                     {dropdownOpen && (
@@ -151,12 +153,18 @@ const Navbar = () => {
                 <>
                   <Link to="/login" className="flex items-center space-x-2 text-gray-700 dark:text-zinc-300 hover:text-orange-500 transition-all">
                     <LogIn className="w-4 h-4" />
-                    <span>Login</span>
+                    <span className="hidden sm:inline">Login</span>
                   </Link>
-                  <Link to="/register" className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all transform hover:scale-105">
+                  <Button
+                    as={Link}
+                    to="/register"
+                    variant="primary"
+                    size="md"
+                    className="flex items-center space-x-2"
+                  >
                     <UserPlus className="w-4 h-4" />
-                    <span>Sign Up</span>
-                  </Link>
+                    <span className="hidden sm:inline">Sign Up</span>
+                  </Button>
                 </>
               )}
             </div>
@@ -180,7 +188,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-white/95 dark:bg-zinc-950 backdrop-blur-sm border-t dark:border-zinc-800">
-            <div className="container mx-auto px-4 py-4 text-center">
+            <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col space-y-4">
                 {navItems.map((item) => (
                   <Link
@@ -189,10 +197,56 @@ const Navbar = () => {
                     onClick={() => setIsOpen(false)}
                     className={`text-sm font-medium transition-colors hover:text-orange-500 
                     ${isLinkActive(item.path) ? "text-orange-500" : "text-gray-700 dark:text-zinc-300"}
-                    p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-zinc-800`}>
+                    p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-zinc-800 text-center`}>
                     {item.label}
                   </Link>
                 ))}
+                
+                {/* Mobile Auth Buttons */}
+                <div className="pt-4 border-t border-gray-200 dark:border-zinc-700 space-y-3">
+                  {user ? (
+                    <>
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center space-x-2 p-3 text-gray-700 dark:text-zinc-300 hover:bg-orange-50 dark:hover:bg-zinc-800 hover:text-orange-500 transition-colors rounded-lg">
+                        <User className="w-4 h-4" />
+                        <span>Profile</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center justify-center space-x-2 w-full p-3 text-gray-700 dark:text-zinc-300 hover:bg-orange-50 dark:hover:bg-zinc-800 hover:text-orange-500 transition-colors rounded-lg">
+                        <LogOut className="w-4 h-4" />
+                        <span>Logout</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center space-x-2 p-3 text-gray-700 dark:text-zinc-300 hover:bg-orange-50 dark:hover:bg-zinc-800 hover:text-orange-500 transition-colors rounded-lg">
+                        <LogIn className="w-4 h-4" />
+                        <span>Login</span>
+                      </Link>
+                      <div className="px-2">
+                        <Button
+                          as={Link}
+                          to="/register"
+                          onClick={() => setIsOpen(false)}
+                          variant="primary"
+                          className="w-full justify-center"
+                        >
+                          <UserPlus className="w-4 h-4" />
+                          <span>Sign Up</span>
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>

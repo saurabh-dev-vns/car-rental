@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, DollarSign, Clock } from 'lucide-react';
+import { SkeletonCard } from '../ui/Skeleton';
 
 const MyBookings = ({ userId }) => {
   const [bookings, setBookings] = useState([]);
@@ -42,8 +43,13 @@ const MyBookings = ({ userId }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Your Bookings
+        </h3>
+        {[...Array(3)].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
       </div>
     );
   }
@@ -82,9 +88,9 @@ const MyBookings = ({ userId }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6 border border-gray-200 dark:border-zinc-600"
+          className="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-zinc-600"
         >
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-2 sm:space-y-0">
             <div>
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {booking.carName}
@@ -93,16 +99,16 @@ const MyBookings = ({ userId }) => {
                 {booking.status}
               </span>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <p className="text-lg font-bold text-orange-500">
                 ${booking.totalPrice}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-gray-500 dark:text-zinc-400" />
+              <Calendar className="w-4 h-4 text-gray-500 dark:text-zinc-400 flex-shrink-0" />
               <div>
                 <p className="text-gray-600 dark:text-zinc-400">Start Date</p>
                 <p className="font-medium text-gray-900 dark:text-white">
@@ -112,7 +118,7 @@ const MyBookings = ({ userId }) => {
             </div>
 
             <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4 text-gray-500 dark:text-zinc-400" />
+              <Clock className="w-4 h-4 text-gray-500 dark:text-zinc-400 flex-shrink-0" />
               <div>
                 <p className="text-gray-600 dark:text-zinc-400">End Date</p>
                 <p className="font-medium text-gray-900 dark:text-white">
@@ -121,11 +127,11 @@ const MyBookings = ({ userId }) => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <MapPin className="w-4 h-4 text-gray-500 dark:text-zinc-400" />
+            <div className="flex items-center space-x-2 sm:col-span-2 lg:col-span-1">
+              <MapPin className="w-4 h-4 text-gray-500 dark:text-zinc-400 flex-shrink-0" />
               <div>
                 <p className="text-gray-600 dark:text-zinc-400">Location</p>
-                <p className="font-medium text-gray-900 dark:text-white">
+                <p className="font-medium text-gray-900 dark:text-white truncate">
                   {booking.location}
                 </p>
               </div>
