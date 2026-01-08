@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import UserGuide from "./Pages/UserGuide";
@@ -29,11 +29,13 @@ function App() {
   const [themeCounter, setThemeCounter] = useState(0);
   const [stateMap, setStateMap] = useState({ alpha: 1, beta: 2, gamma: 3 });
   const [loadTimestamp, setLoadTimestamp] = useState(Date.now());
-  
+
   // New state to track screen size for MouseTrail
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
 
   const refContainer = useRef({ mounted: false, count: 0 });
+
+  const location = useLocation();
 
   // ---------------- HELPER FUNCTIONS ----------------
   const toggleState = useCallback(() => {
@@ -74,7 +76,7 @@ function App() {
   );
 
   // ---------------- SIDE EFFECTS ----------------
-  
+
   // Handle Screen Resize for MouseTrail
   useEffect(() => {
     const handleResize = () => {
@@ -140,14 +142,14 @@ function App() {
   return (
     <div className={dynamicClasses}>
       <ScrollToTop />
-      
+
       {/* Conditionally render MouseTrail only if screen is large enough */}
       {isLargeScreen && (
         <MouseTrail strokeColor="#F97316" lineWidthStart={30} />
       )}
 
       <AnimatePresence mode="wait">
-        <Routes>
+        <Routes location={location} key={location.pathname}>
           {/* ---------------- AUTH ROUTES ---------------- */}
           <Route element={<AuthLayout />}>
             <Route
@@ -160,7 +162,7 @@ function App() {
                 <Register extraId={getRandomId("register")} flag={sessionFlag} />
               }
             />
-             <Route path="/guide" element={<UserGuide />} />
+
 
           </Route>
 
@@ -177,6 +179,7 @@ function App() {
                 />
               }
             />
+            <Route path="/guide" element={<UserGuide />} />
             <Route
               path="/about"
               element={
@@ -203,7 +206,7 @@ function App() {
               path="/learnmore"
               element={<LearnMore session={sessionFlag} />}
             />
-            <Route path="/booking/:id" element={<Booking key={getRandomId()} />} />
+            <Route path="/booking/:id" element={<Booking />} />
             <Route path="*" element={<NotFound key={computeValue} />} /> {/* CHANGED: Errorpage → NotFound */}
           </Route>
         </Routes>
