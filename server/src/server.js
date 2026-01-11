@@ -1,36 +1,38 @@
 import express from "express";
 import Env from "./env/env.js";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 
-// Middleware
+/* =========================
+   Middleware
+========================= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Dynamically set CORS origin for development and production
-app.use((req, res, next) => {
-  let allowedOrigin;
-  if (Env.NODE_ENV === "production") {
-    allowedOrigin = Env.CORS_ORIGIN_PROD;
-  } else {
-    allowedOrigin = Env.CORS_ORIGIN_DEV;
-  }
-  res.header("Access-Control-Allow-Origin", allowedOrigin);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
+/* =========================
+   CORS (Cookie-based Auth)
+========================= */
+const allowedOrigin =
+  Env.NODE_ENV === "production"
+    ? Env.CORS_ORIGIN_PROD
+    : Env.CORS_ORIGIN_DEV;
 
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true, // ⭐ VERY IMPORTANT
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
-
-// Database connection
+/* =========================
+   Database Connection
+========================= */
 if (Env.MONGO_URI) {
   mongoose
     .connect(Env.MONGO_URI)
@@ -44,7 +46,9 @@ if (Env.MONGO_URI) {
   console.warn("⚠️  MONGO_URI not provided, database connection skipped");
 }
 
-// Routes
+/* =========================
+   Routes
+========================= */
 app.get("/", (req, res) => {
   res.json({
     message: "Car Rental API Server",
@@ -53,7 +57,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check endpoint
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
@@ -61,12 +64,12 @@ app.get("/health", (req, res) => {
   });
 });
 
-// API routes placeholder - can be extended later
-// Example: app.use("/api/auth", authRoutes);
-// Example: app.use("/api/cars", carRoutes);
-// Example: app.use("/api/bookings", bookingRoutes);
+// 🔐 Future secure routes
+// app.use("/api/auth", authRoutes);
 
-// 404 handler
+/* =========================
+   404 Handler
+========================= */
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -75,7 +78,9 @@ app.use((req, res) => {
   });
 });
 
-// Error handling middleware
+/* =========================
+   Error Handler
+========================= */
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(err.status || 500).json({
