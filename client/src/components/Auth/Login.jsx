@@ -19,29 +19,25 @@ import {
   EyeOff,
 } from "lucide-react";
 import { auth } from "./Firebase.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ForgotPassword from "./ForgotPassword";
 import useAuthStore from "../../store/store.js";
-import { Link } from "react-router-dom";
 
 const Login = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
 
+  // Redirect logged-in users to /profile
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        navigate("/booking");
-      } else {
-        console.log("User is logged out");
+        navigate("/profile");
       }
     });
     return () => unsubscribe();
@@ -50,8 +46,13 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      alert("Login successful!");
+      const result = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      setUser(result.user);
+      navigate("/profile"); // go to profile after login
     } catch (error) {
       console.error("Login error:", error);
       setError("Failed to login. Please check your credentials and try again.");
@@ -63,7 +64,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
-      alert("Login with Google successful!");
+      navigate("/profile");
     } catch (error) {
       console.error("Google login error:", error);
       setError("Failed to login with Google. Please try again.");
@@ -72,21 +73,25 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white to-gray-50 dark:from-zinc-950 dark:to-zinc-900 flex transition-colors duration-300">
-      {/* Left Section: Content (Orange Sidebar remains mostly same for brand identity) */}
+      
+      {/* LEFT SECTION: UNCHANGED */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="hidden lg:flex w-1/2 relative overflow-hidden">
+        className="hidden lg:flex w-1/2 relative overflow-hidden"
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700">
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)`,
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)",
               backgroundSize: "32px 32px",
-            }}></div>
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-40 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+            }}
+          />
+          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-40 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative w-full p-12 flex flex-col justify-between z-10">
@@ -136,13 +141,13 @@ const Login = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
             className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/5">
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-3 gap-8 text-center">
               {[
                 { value: "50K+", label: "Happy Customers" },
                 { value: "100+", label: "Premium Cars" },
                 { value: "4.9/5", label: "User Rating" },
               ].map((stat, index) => (
-                <div key={index} className="text-center">
+                <div key={index}>
                   <h4 className="text-2xl font-bold text-white mb-1">{stat.value}</h4>
                   <p className="text-orange-50/80 text-sm">{stat.label}</p>
                 </div>
@@ -152,13 +157,14 @@ const Login = () => {
         </div>
       </motion.div>
 
-      {/* Right Section: Login Form (Updates for Dark Mode) */}
+      {/* RIGHT SECTION: LOGIN FORM (UNCHANGED, FULL FORM) */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
         className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
+
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -182,6 +188,8 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* EMAIL */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">Email</label>
               <div className="relative">
@@ -197,6 +205,7 @@ const Login = () => {
               </div>
             </div>
 
+            {/* PASSWORD */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">Password</label>
               <div className="relative">
@@ -218,6 +227,7 @@ const Login = () => {
               </div>
             </div>
 
+            {/* ERROR */}
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -228,6 +238,7 @@ const Login = () => {
               </motion.div>
             )}
 
+            {/* FORGOT PASSWORD */}
             <div className="flex items-center justify-between text-sm">
               <button
                 type="button"
@@ -237,6 +248,7 @@ const Login = () => {
               </button>
             </div>
 
+            {/* LOGIN BUTTON */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -246,6 +258,7 @@ const Login = () => {
               Sign in
             </motion.button>
 
+            {/* OR */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-zinc-800"></div>
@@ -257,6 +270,7 @@ const Login = () => {
               </div>
             </div>
 
+            {/* GOOGLE SIGN-IN */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

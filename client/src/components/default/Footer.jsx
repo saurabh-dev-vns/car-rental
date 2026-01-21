@@ -6,7 +6,6 @@ import {
   Mail,
   Clock,
   Facebook,
-  Twitter,
   Instagram,
   Linkedin,
   Send,
@@ -15,6 +14,18 @@ import {
   ArrowRight,
   CheckCircle,
 } from "lucide-react";
+
+// Custom X (Twitter) Icon Component
+const XIcon = ({ className = "w-5 h-5" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    className={className}
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -36,7 +47,7 @@ const Footer = () => {
 
   const socialLinks = [
     { Icon: Facebook, href: "#", color: "hover:bg-blue-600" },
-    { Icon: Twitter, href: "#", color: "hover:bg-blue-400" },
+    { Icon: XIcon, href: "#", color: "hover:bg-black" },
     { Icon: Instagram, href: "#", color: "hover:bg-pink-600" },
     { Icon: Linkedin, href: "#", color: "hover:bg-blue-700" },
   ];

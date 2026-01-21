@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import {
   Phone,
   Mail,
@@ -21,6 +23,10 @@ const Contact = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // References for the Map
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -50,13 +56,58 @@ const Contact = () => {
     }, 3000);
   };
 
+  // --- Map Initialization Logic ---
+  useEffect(() => {
+    // 1. Prevent re-initialization if map already exists
+    if (mapRef.current) return;
+
+    // 2. Fix for Leaflet default marker icons in React/Webpack environments
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl:
+        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+      shadowUrl:
+        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    });
+
+    // 3. Initialize Map if container exists
+    if (mapContainerRef.current) {
+      // Coordinates for New York (approx location for "123 Car Street")
+      const lat = 40.7505;
+      const lng = -73.9934;
+
+      mapRef.current = L.map(mapContainerRef.current).setView([lat, lng], 14);
+
+      // Add OpenStreetMap Tile Layer
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(mapRef.current);
+
+      // Add Marker
+      L.marker([lat, lng])
+        .addTo(mapRef.current)
+        .bindPopup("<b>Car Rental HQ</b><br>123 Car Street, New York")
+        .openPopup();
+    }
+
+    // 4. Cleanup function to remove map instance on component unmount
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
   const contactInfo = [
     {
       icon: Phone,
       title: "Phone",
       details: ["+1 (555) 123-4567", "+1 (555) 765-4321"],
       color: "text-blue-500",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20", // Added dark variant
+      bgColor: "bg-blue-50 dark:bg-blue-900/20",
     },
     {
       icon: Mail,
@@ -94,13 +145,14 @@ const Contact = () => {
             variants={fadeIn}
             initial="initial"
             whileInView="whileInView"
-            className="text-center max-w-3xl mx-auto">
+            className="text-center max-w-3xl mx-auto"
+          >
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-6
                          cursor-pointer hover:bg-orange-200 dark:hover:bg-orange-800 transition-colors duration-200"
-              >
-            <MessageSquare className="w-5 h-5 text-orange-500" />
+            >
+              <MessageSquare className="w-5 h-5 text-orange-500" />
               <span className="text-orange-700 dark:text-orange-400 font-medium">
                 Contact Us
               </span>
@@ -120,13 +172,13 @@ const Contact = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12">
-
             {/* Contact Information Column */}
             <motion.div
               variants={fadeIn}
               initial="initial"
               whileInView="whileInView"
-              className="space-y-6">
+              className="space-y-6"
+            >
               <div className="grid sm:grid-cols-2 gap-6">
                 {contactInfo.map((info, index) => (
                   <motion.div
@@ -134,14 +186,20 @@ const Contact = () => {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`${info.bgColor} rounded-xl p-6 hover:scale-105 transition-all border border-transparent dark:border-zinc-800`}>
+                    className={`${info.bgColor} rounded-xl p-6 hover:scale-105 transition-all border border-transparent dark:border-zinc-800`}
+                  >
                     <div className="flex items-center gap-3 mb-4">
                       <info.icon className={`w-6 h-6 ${info.color}`} />
-                      <h3 className="text-xl font-semibold dark:text-zinc-100">{info.title}</h3>
+                      <h3 className="text-xl font-semibold dark:text-zinc-100">
+                        {info.title}
+                      </h3>
                     </div>
                     <div className="space-y-2">
                       {info.details.map((detail, idx) => (
-                        <p key={idx} className="text-gray-600 dark:text-zinc-400 text-sm">
+                        <p
+                          key={idx}
+                          className="text-gray-600 dark:text-zinc-400 text-sm"
+                        >
                           {detail}
                         </p>
                       ))}
@@ -150,15 +208,13 @@ const Contact = () => {
                 ))}
               </div>
 
-              {/* Map Placeholder */}
+              {/* Leaflet Map Implementation */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="bg-gray-100 dark:bg-zinc-800 rounded-xl p-4 h-64 flex items-center justify-center border border-transparent dark:border-zinc-700">
-                <div className="text-center">
-                  <MapPin className="w-12 h-12 text-gray-400 dark:text-zinc-600 mx-auto mb-2" />
-                  <p className="text-gray-400 dark:text-zinc-500 text-sm font-medium">Map View Coming Soon</p>
-                </div>
+                className="bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden shadow-lg border border-transparent dark:border-zinc-700 h-80 relative z-0"
+              >
+                <div ref={mapContainerRef} className="w-full h-full z-0" />
               </motion.div>
             </motion.div>
 
@@ -167,15 +223,21 @@ const Contact = () => {
               variants={fadeIn}
               initial="initial"
               whileInView="whileInView"
-              className="bg-white dark:bg-zinc-900 rounded-xl p-8 border border-gray-100 dark:border-zinc-800 shadow-xl transition-colors">
+              className="bg-white dark:bg-zinc-900 rounded-xl p-8 border border-gray-100 dark:border-zinc-800 shadow-xl transition-colors"
+            >
               <div className="flex items-center gap-2 mb-6">
                 <MessageCircle className="w-6 h-6 text-orange-500" />
-                <h2 className="text-2xl font-bold dark:text-white">Send Us a Message</h2>
+                <h2 className="text-2xl font-bold dark:text-white">
+                  Send Us a Message
+                </h2>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-gray-700 dark:text-zinc-300 font-medium text-sm">
+                  <label
+                    htmlFor="name"
+                    className="text-gray-700 dark:text-zinc-300 font-medium text-sm"
+                  >
                     Full Name
                   </label>
                   <div className="relative">
@@ -196,7 +258,10 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-gray-700 dark:text-zinc-300 font-medium text-sm">
+                  <label
+                    htmlFor="email"
+                    className="text-gray-700 dark:text-zinc-300 font-medium text-sm"
+                  >
                     Email Address
                   </label>
                   <div className="relative">
@@ -217,7 +282,10 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="subject" className="text-gray-700 dark:text-zinc-300 font-medium text-sm">
+                  <label
+                    htmlFor="subject"
+                    className="text-gray-700 dark:text-zinc-300 font-medium text-sm"
+                  >
                     Subject
                   </label>
                   <input
@@ -235,7 +303,10 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="message" className="text-gray-700 dark:text-zinc-300 font-medium text-sm">
+                  <label
+                    htmlFor="message"
+                    className="text-gray-700 dark:text-zinc-300 font-medium text-sm"
+                  >
                     Message
                   </label>
                   <textarea
@@ -257,8 +328,13 @@ const Contact = () => {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   className={`w-full py-4 rounded-lg flex items-center justify-center gap-2 shadow-lg
-                           ${isSubmitted ? "bg-green-500 shadow-green-500/20" : "bg-orange-500 shadow-orange-500/30"} 
-                           text-white font-bold transition-all`}>
+                           ${
+                             isSubmitted
+                               ? "bg-green-500 shadow-green-500/20"
+                               : "bg-orange-500 shadow-orange-500/30"
+                           } 
+                           text-white font-bold transition-all`}
+                >
                   {isSubmitted ? (
                     <>
                       <Star className="w-5 h-5" />

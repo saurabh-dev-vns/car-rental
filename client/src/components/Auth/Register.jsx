@@ -37,15 +37,16 @@ const Register = () => {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        navigate("/booking");
-      }
-    });
-    return () => unsubscribe();
-  }, [navigate, setUser]);
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUser(user);
+      navigate("/profile");
+    }
+  });
+  return () => unsubscribe();
+}, [navigate, setUser]);
+
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -58,26 +59,86 @@ const Register = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError(null);
+  //   if (formData.password !== formData.confirmPassword) {
+  //     setError("Passwords do not match!");
+  //     return;
+  //   }
+
+  //   try {
+  //     const userCredential = await createUserWithEmailAndPassword(
+  //       auth,
+  //       formData.email,
+  //       formData.password
+  //     );
+  //     setUser(userCredential.user);
+  //     alert("Registration successful!");
+  //   } catch (error) {
+  //     setError("Registration failed. Please check your details and try again.");
+  //   }
+  // };
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
-      return;
+  e.preventDefault();
+  setError(null);
+
+  // Password match check
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match!");
+    return;
+  }
+
+  try {
+    //Firebase Email/Password Signup
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      formData.email,
+      formData.password
+    );
+
+    const user = userCredential.user;
+    setUser(user);
+
+    console.log("Firebase signup success:", user.email);
+
+    // Call backend to send greeting mail
+    const res = await fetch("http://localhost:5000/api/mail/welcome", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: user.email,
+        name: user.email.split("@")[0], 
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn("⚠️Signup done but mail failed");
+    } else {
+      console.log("📧Greeting mail sent successfully");
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      setUser(userCredential.user);
-      alert("Registration successful!");
-    } catch (error) {
-      setError("Registration failed. Please check your details and try again.");
+    alert("Registration successful! Welcome 🎉");
+    navigate("/profile");
+
+  } catch (error) {
+    console.error("Signup error:", error.code, error.message);
+
+    // User-friendly messages
+    if (error.code === "auth/email-already-in-use") {
+      setError("Email already registered. Please login.");
+    } else if (error.code === "auth/weak-password") {
+      setError("Password must be at least 6 characters.");
+    } else if (error.code === "auth/invalid-email") {
+      setError("Invalid email address.");
+    } else {
+      setError("Registration failed. Please try again.");
     }
-  };
+  }
+};
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white to-gray-50 dark:from-zinc-950 dark:to-zinc-900 flex transition-colors duration-300">

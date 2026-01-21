@@ -1,0 +1,41 @@
+name: Notify assignee on issue
+
+on:
+  issues:
+    types: [assigned]
+
+permissions:
+  issues: write
+
+jobs:
+  notify-assignee:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Comment to notify assignee
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // User who was assigned to the issue
+            const assignee = context.payload.assignee?.login;
+            // User who did the assigning (not used for notification)
+            const assigner = context.payload.sender?.login;
+
+            const issueNumber = context.payload.issue.number;
+            const { owner, repo } = context.repo;
+
+            if (!assignee) {
+              core.info('No assignee found, skipping.');
+              return;
+            }
+
+            const body = `Hey @${assignee}, you have been assigned to this issue. Please take a look when you can. 👋`;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              body,
+            });
+            
