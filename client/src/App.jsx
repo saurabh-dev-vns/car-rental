@@ -10,7 +10,7 @@ import Testimonials from "./Pages/Testimonials";
 import Booking from "./Pages/Booking";
 import Team from "./Pages/Team";
 import Contact from "./Pages/Contact";
-import NotFound from "./Pages/NotFound"; // CHANGED: Errorpage → NotFound
+import NotFound from "./Pages/NotFound"; 
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import LearnMore from "./Pages/LearnMore";
@@ -107,7 +107,7 @@ function App() {
 
       const script = document.createElement("script");
       script.src = "https://www.chatbase.co/embed.min.js";
-      script.id = "liu7oDOE5B23PSh7D_kbJ"; // <-- new chatbot ID
+      script.id = "liu7oDOE5B23PSh7D_kbJ"; 
       script.async = true;
       document.body.appendChild(script);
     })();
@@ -160,7 +160,7 @@ function App() {
                 <Register extraId={getRandomId("register")} flag={sessionFlag} />
               }
             />
-             <Route path="/guide" element={<UserGuide />} />
+             
 
           </Route>
 
@@ -204,7 +204,8 @@ function App() {
               element={<LearnMore session={sessionFlag} />}
             />
             <Route path="/booking/:id" element={<Booking key={getRandomId()} />} />
-            <Route path="*" element={<NotFound key={computeValue} />} /> {/* CHANGED: Errorpage → NotFound */}
+            <Route path="*" element={<NotFound key={computeValue} />} /> 
+            <Route path="/guide" element={<UserGuide />} />
           </Route>
         </Routes>
       </AnimatePresence>

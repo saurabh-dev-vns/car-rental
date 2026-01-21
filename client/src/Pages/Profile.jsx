@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+
 import { 
   User, Mail, Phone, MapPin, CreditCard, 
   Calendar, CheckCircle, AlertCircle, Clock, 
@@ -38,6 +42,55 @@ const MOCK_HISTORY = [
     status: "completed"
   }
 ];
+const generateInvoicePDF = (booking, user) => {
+  const doc = new jsPDF();
+
+  // Header
+  doc.setFontSize(28);
+  doc.text("INVOICE", 14, 22);
+
+  doc.setFontSize(10);
+  doc.text("Car Rental Inc.", 14, 32);
+  doc.text("123 Coastal Hwy", 14, 38);
+  doc.text("Los Angeles, CA", 14, 44);
+
+  // Invoice meta
+  doc.text("Invoice #:", 140, 32);
+  doc.text(`INV-${booking.id}`, 170, 32);
+
+  doc.text("Invoice Date:", 140, 38);
+  doc.text(booking.endDate, 170, 38);
+
+  // Bill To
+  doc.setFontSize(11);
+  doc.text("BILL TO", 14, 60);
+  doc.setFontSize(10);
+  doc.text(user.fullName, 14, 66);
+  doc.text(user.address, 14, 72);
+  doc.text(user.email, 14, 78);
+
+  // ✅ THIS IS THE FIX
+  autoTable(doc, {
+    startY: 90,
+    head: [["QTY", "DESCRIPTION", "UNIT PRICE", "AMOUNT"]],
+    body: [
+      ["1", booking.car, `$${booking.price}`, `$${booking.price}`]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [30, 41, 82],
+      textColor: 255
+    }
+  });
+
+  const finalY = doc.lastAutoTable.finalY + 10;
+
+  doc.text("TOTAL:", 140, finalY);
+  doc.text(`$${booking.price}`, 170, finalY);
+
+  doc.save(`invoice-${booking.id}.pdf`);
+};
+
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -331,10 +384,16 @@ const Profile = () => {
                           ) : (
                             <span className="px-2 py-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 text-xs rounded-full font-medium">Completed</span>
                           )}
+                          <button
+  className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+  onClick={() => generateInvoicePDF(booking, user)}
+>
+  Invoice <ChevronRight size={14} />
+</button>
+
                           
-                          <button className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
-                            Invoice <ChevronRight size={14} />
-                          </button>
+           
+
                         </div>
                       </div>
                     </div>
