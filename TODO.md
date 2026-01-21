@@ -1,4 +1,5 @@
-# TODO: Fix Repository URL Inconsistencies and Add Coding Standards in CONTRIBUTING.md
+# TODO: Clarify and Expand Environment Variable Setup in README.md
 
-- [ ] Update the clone command in the main "How to Contribute" section from "car-rental-system.git" to "car-rental.git"
-- [ ] Add a new "Coding Standards" section with guidelines on ESLint, Prettier, testing, branch naming conventions (e.g., feature/, bugfix/), and commit message formats (conventional commits)
+- [x] Add detailed explanations for Client environment variables (purpose, how to obtain, security considerations)
+- [x] Add detailed explanations for Server environment variables (purpose, how to obtain, security considerations)
+- [x] Add warnings about not committing .env files to version control

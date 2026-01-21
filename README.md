@@ -68,6 +68,18 @@ Welcome to the Car Rental  project! This application allows users to rent cars e
    VITE_APP_ID="your_app_id_here"
    VITE_MEASUREMENT_ID="your_measurement_id_here"
    ```
+
+   **Environment Variable Explanations:**
+   - `VITE_API_URL`: The base URL for the backend API. For local development, use `http://localhost:5000/api`. In production, replace with your deployed server URL.
+   - `VITE_API_KEY`: Your Firebase API key. Obtain this from the Firebase Console under Project Settings > General > Your apps > Web app configuration. [Firebase Docs](https://firebase.google.com/docs/web/setup)
+   - `VITE_PROJECT_ID`: Your Firebase project ID. Found in the Firebase Console under Project Settings > General.
+   - `VITE_AUTH_DOMAIN`: Your Firebase Auth domain, typically `<project-id>.firebaseapp.com`. Obtain from Firebase Console.
+   - `VITE_STORAGE_BUCKET`: Your Firebase Storage bucket URL, usually `<project-id>.appspot.com`. Found in Firebase Console under Storage.
+   - `VITE_MESSAGING_SENDER_ID`: The sender ID for Firebase Cloud Messaging. Obtain from Firebase Console under Project Settings > Cloud Messaging.
+   - `VITE_APP_ID`: Your Firebase app ID. Found in Firebase Console under Project Settings > General > Your apps.
+   - `VITE_MEASUREMENT_ID`: Your Google Analytics measurement ID (e.g., G-XXXXXXXXXX). Obtain from Google Analytics if using Firebase Analytics. [Google Analytics Docs](https://support.google.com/analytics/answer/9304153)
+
+   **Security Note:** Never commit `.env` files to version control. Add `.env` to your `.gitignore` file to prevent accidental exposure of sensitive information.
 4. Start the development server:
    ```sh
    npm run dev
@@ -88,6 +100,13 @@ Welcome to the Car Rental  project! This application allows users to rent cars e
    MONGO_URI=mongodb://localhost:27017/car-rental
    JWT_SECRET=your_jwt_secret
    ```
+
+   **Environment Variable Explanations:**
+   - `PORT`: The port number on which the server will run. Default is 5000 for local development.
+   - `MONGO_URI`: The connection string for your MongoDB database. For local MongoDB, use `mongodb://localhost:27017/car-rental`. For MongoDB Atlas, obtain the connection string from your Atlas cluster dashboard. [MongoDB Docs](https://docs.mongodb.com/manual/reference/connection-string/)
+   - `JWT_SECRET`: A secret key used for signing JWT tokens. Generate a strong, random string (e.g., using `openssl rand -base64 32` or an online generator). Keep this secret and never share it.
+
+   **Security Note:** Never commit `.env` files to version control. Add `.env` to your `.gitignore` file to prevent accidental exposure of sensitive information like database credentials and JWT secrets.
 4. Start the server:
    ```sh
    npm start
