@@ -11,22 +11,22 @@ import {
 
 const steps = [
   {
-    icon: <Search className="w-8 h-8 text-orange-500" />,
+    icon: <Search className="w-7 h-7 text-orange-500" />,
     title: "Browse Cars",
     desc: "Explore available cars with detailed specs, pricing, and images.",
   },
   {
-    icon: <Car className="w-8 h-8 text-orange-500" />,
+    icon: <Car className="w-7 h-7 text-orange-500" />,
     title: "Select a Car",
     desc: "Choose the car that best fits your trip and budget.",
   },
   {
-    icon: <CalendarCheck className="w-8 h-8 text-orange-500" />,
+    icon: <CalendarCheck className="w-7 h-7 text-orange-500" />,
     title: "Book Instantly",
     desc: "Book your car in just a few clicks with instant confirmation.",
   },
   {
-    icon: <User className="w-8 h-8 text-orange-500" />,
+    icon: <User className="w-7 h-7 text-orange-500" />,
     title: "Manage Profile",
     desc: "View bookings, update profile details, and manage your account.",
   },
@@ -52,8 +52,9 @@ const UserGuide = () => {
     <div className="min-h-screen px-6 py-20 bg-gray-50 dark:bg-zinc-950">
       {/* Hero Section */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="text-center max-w-3xl mx-auto mb-16"
       >
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
@@ -70,13 +71,60 @@ const UserGuide = () => {
         {steps.map((step, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.05 }}
-            className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md text-center"
+            whileHover={{ y: -6 }}
+            transition={{
+              type: "spring",
+              stiffness: 200,
+              damping: 22,
+              mass: 1,
+            }}
+            className="
+              group
+              bg-white dark:bg-zinc-900
+              p-6 rounded-xl text-center
+              border border-transparent
+              shadow-md
+              hover:shadow-[0_16px_40px_rgba(255,140,0,0.2)]
+              hover:border-orange-500/30
+              transition-colors duration-300
+            "
           >
-            <div className="flex justify-center mb-4">{step.icon}</div>
+            {/* Icon */}
+            <div className="relative flex justify-center mb-4">
+              {/* Soft glow */}
+              <motion.div
+                className="absolute w-16 h-16 rounded-full bg-orange-500/20 blur-2xl"
+                initial={{ opacity: 0, scale: 0.85 }}
+                whileHover={{ opacity: 1, scale: 1.1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
+
+              {/* Icon container */}
+              <motion.div
+                whileHover={{ scale: 1.15, rotate: 4 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 180,
+                  damping: 18,
+                  mass: 0.8,
+                }}
+                className="
+                  relative z-10
+                  flex items-center justify-center
+                  w-14 h-14 rounded-full
+                  bg-orange-500/10
+                  border border-orange-500/30
+                  shadow-[0_0_20px_rgba(255,140,0,0.25)]
+                "
+              >
+                {step.icon}
+              </motion.div>
+            </div>
+
             <h3 className="font-semibold text-lg text-gray-800 dark:text-white">
               {step.title}
             </h3>
+
             <p className="mt-2 text-sm text-gray-600 dark:text-zinc-400">
               {step.desc}
             </p>
@@ -88,7 +136,15 @@ const UserGuide = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="max-w-4xl mx-auto bg-white dark:bg-zinc-900 rounded-2xl p-8 shadow-lg"
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="
+          max-w-4xl mx-auto
+          bg-white dark:bg-zinc-900
+          rounded-2xl p-8
+          shadow-lg
+          hover:shadow-[0_25px_60px_rgba(0,0,0,0.6)]
+          transition-all duration-300
+        "
       >
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
           Key Features
