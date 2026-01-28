@@ -46,10 +46,10 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { Icon: Facebook, href: "#", color: "hover:bg-blue-600" },
-    { Icon: XIcon, href: "#", color: "hover:bg-black" },
-    { Icon: Instagram, href: "#", color: "hover:bg-pink-600" },
-    { Icon: Linkedin, href: "#", color: "hover:bg-blue-700" },
+    { Icon: Facebook, href: "#"},
+    { Icon: XIcon, href: "#"},
+    { Icon: Instagram, href: "#" },
+    { Icon: Linkedin, href: "#" },
   ];
 
   const quickLinks = [
@@ -93,7 +93,8 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`w-10 h-10 rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 flex items-center justify-center ${color} hover:text-white transition-all duration-300 shadow-sm`}
+                className="w-10 h-10 rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 flex items-center justify-center text-gray-500 hover:text-[#F97316] transition-all duration-300 shadow-sm"
+
                 >
                   <Icon className="w-5 h-5" />
                 </motion.a>
